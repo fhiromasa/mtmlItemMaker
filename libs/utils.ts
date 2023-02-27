@@ -177,6 +177,9 @@ export const writeItems = async (
   modifierArray.forEach((element) => {
     items[element.name] = element;
   });
+
+  delete items["dummy"];
+
   return await Deno.writeTextFile(filename, JSON.stringify(items));
 };
 
