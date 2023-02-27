@@ -13,8 +13,8 @@ Deno.test("property", () => {
   const cms = new movabletype();
   assertNotEquals(cms.TAG_URL, "");
   assertNotEquals(cms.TAG_SELECTOR, "");
-  // assertNotEquals(cms.MODIFIER_URL, "");
-  // assertNotEquals(cms.MODIFIER_SELECTOR, "");
+  assertNotEquals(cms.MODIFIER_URL, "");
+  assertNotEquals(cms.MODIFIER_SELECTOR, "");
   assertNotEquals(cms.FILENAME, "");
 });
 
@@ -100,4 +100,20 @@ Deno.test("makeTagItems_ok", async () => {
   assertEquals(actual.modifiers.sort.value, expected_mod.value);
   assertEquals(actual.modifiers.sort.description, expected_mod.description);
   assertEquals(actual.modifiers.sort.type, expected_mod.type);
+});
+/**
+ * --------------------------------
+ * makeModifierItems()
+ * --------------------------------
+ */
+Deno.test("makeModifierItems_ok", async () => {
+  // prepare
+  const expected_modifier = test_data.expected_modifier;
+  const cms = new movabletype();
+
+  // execute
+  const actual = await cms.makeModifierItems();
+
+  // assert
+  assertEquals(actual.capitalize.name, expected_modifier.name);
 });

@@ -6,21 +6,52 @@ export default class movabletype {
     "https://www.movabletype.jp/documentation/appendices/tags/";
   readonly TAG_SELECTOR = "ul.entrylist-with-topborder > li";
   readonly TAG_MODIFIER_SELECTOR = "div.content-main > article.entry-detail";
-  readonly MODIFIER_URL = "";
-  readonly MODIFIER_SELECTOR = "";
+  readonly MODIFIER_URL =
+    "https://www.movabletype.jp/documentation/appendices/modifiers/";
+  readonly MODIFIER_SELECTOR = "ul.entrylist-with-topborder > li";
   readonly FILENAME = "./data/movabletype.json";
 
   readonly main = async () => {
     // タグのアイテム配列を作る
     const _tagItems = await this.makeTagItems();
     // モディファイアのアイテム配列を作る
+    const _modifierItems = await this.makeModifierItems();
 
     // ふたつを合体してthis.filenameに書き込む
-    utils.writeItems(this.FILENAME, _tagItems, {});
+    utils.writeItems(this.FILENAME, _tagItems, _modifierItems);
+  };
+
+  /**
+   * モディファイアのTItemsを作る。
+   * fetch 1回
+   * @returns
+   */
+  readonly makeModifierItems = async (): Promise<utils.TItems> => {
+    const document = await utils.fetchDocument(this.MODIFIER_URL);
+    const nodeList = document.querySelectorAll(this.MODIFIER_SELECTOR);
+
+    const items: utils.TItems = {};
+    nodeList.forEach((_node, index) => {
+      const li = document.querySelector(
+        `${this.MODIFIER_SELECTOR}:nth-child(${index})`,
+      );
+      if (!li) return utils.dummyItem;
+      const item: utils.TItem = {
+        name: li.querySelector("h2 > a")?.textContent || "",
+        type: "global",
+        description: li.querySelector("p")?.textContent || "",
+        url: li.querySelector("h2 > a")?.getAttribute("href") || "",
+        modifiers: {},
+      };
+      items[item.name] = item;
+    });
+
+    return items;
   };
 
   /**
    * タグのTItemsを作る
+   * fetch 1 + {タグの数}回
    * @returns
    */
   readonly makeTagItems = async (): Promise<utils.TItems> => {

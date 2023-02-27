@@ -31,3 +31,13 @@ export const expected_tag2: utils.TItem = {
     "https://www.movabletype.jp/documentation/appendices/tags/entryifextended.html",
   modifiers: {},
 };
+
+export const expected_modifier: utils.TItem = {
+  name: "capitalize",
+  type: "global",
+  description:
+    "1 を指定すると、モディファイアを付与したファンクションタグの値に含まれる単語の最初の文字を大文字に変更し、残りの文字を小文字に変換します。",
+  url:
+    "https://www.movabletype.jp/documentation/appendices/modifiers/capitalize.html",
+  modifiers: {},
+};
