@@ -1,4 +1,4 @@
-import { deno_dom, setTimeout } from "./deps.ts";
+import { deno_dom, isURL } from "./deps.ts";
 
 export type TItems = {
   [string: string]: TItem;
@@ -14,7 +14,7 @@ export type TItemType = "global" | "function" | "block" | "undefined";
 export type TModifiers = {
   [string: string]: TModifier;
 };
-type TModifier = {
+export type TModifier = {
   name: string;
   type: "local";
   value: string;
@@ -30,6 +30,7 @@ export enum ERROR_MESSAGES {
   parse = "parseFromString returned null",
   nullSelector = "Selector has no element",
   notTagName = "is not tag name",
+  fetch = "fetch error in ",
 }
 
 /**
@@ -40,17 +41,19 @@ export enum ERROR_MESSAGES {
 export const fetchDocument = async (
   url: string,
 ): Promise<deno_dom.HTMLDocument> => {
-  if (!url) {
+  if (!isURL(url)) {
     throw new Error(ERROR_MESSAGES.url);
   }
 
   let temp_res;
   try {
     temp_res = await fetch(url);
-  } catch (_error) {
-    temp_res = await setTimeout(async () => {
-      return await fetch(url);
-    }, 10);
+  } catch (error) {
+    console.log(error.message);
+    throw new Error(ERROR_MESSAGES.fetch + url);
+    // temp_res = await setTimeout(async () => {
+    //   return await fetch(url);
+    // }, 10);
   }
   const res = temp_res;
   const html = await res.text();
@@ -65,7 +68,7 @@ export const fetchDocument = async (
  * @returns
  * @throws invalid selector or nullSelector
  */
-export const elementFromURL = async (
+export const fetchElement = async (
   url: string,
   selector: string,
 ): Promise<deno_dom.Element> => {
@@ -89,7 +92,7 @@ export const elementFromURL = async (
  * @throws notTagName
  */
 export const normalizeTagName = (name: string): string => {
-  if (!name.match(/mt(app)?:?\w+/i)) {
+  if (name.search(/mt(app)?:?\w+/i) < 0) {
     throw new Error(name + ERROR_MESSAGES.notTagName);
   }
 
@@ -148,6 +151,33 @@ export const textFormat = (description: string): string => {
     .replace(/[\n]/g, "")
     .replace(/\s{2,}/g, " ")
     .replace(/\s*$/, "");
+};
+
+/**
+ * @param filename
+ * @param tagItems
+ * @param modifierItems
+ * @returns
+ * @throws invalid filename, no items
+ */
+export const writeItems = async (
+  filename: string,
+  tagItems: TItems,
+  modifierItems: TItems,
+) => {
+  if (!filename.match(/\.json$/)) {
+    throw new Error(ERROR_MESSAGES.filename);
+  }
+  const tagArray = Object.values(tagItems);
+  const modifierArray = Object.values(modifierItems);
+  if (tagArray.length === 0 && modifierArray.length === 0) {
+    throw new Error(ERROR_MESSAGES.item);
+  }
+  const items = tagItems;
+  modifierArray.forEach((element) => {
+    items[element.name] = element;
+  });
+  return await Deno.writeTextFile(filename, JSON.stringify(items));
 };
 
 export const dummyItem: TItem = {

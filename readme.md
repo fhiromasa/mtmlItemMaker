@@ -11,10 +11,13 @@ deno でネットワーク、ファイルシステムへアクセスするには
 - ネットワークアクセス　--allow-net
 
 ```sh
-$ deno run [flags] script.ts
+$ deno run [flags] mod.ts
 
 # ネットだけ許可
-$ deno run --allow-net script.ts
+$ deno run --allow-net mod.ts
+
+# ネットと書き込み許可
+$ deno run --allow-net --allow-write mod.ts
 ```
 
 # ディレクトリ説明
