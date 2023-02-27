@@ -184,9 +184,9 @@ export const writeItems = async (
 };
 
 export const dummyItem: TItem = {
-  name: "dummy",
+  name: "MTDummy",
   type: "undefined",
-  description: "dummy",
-  url: "dummy",
+  description: "dummy description",
+  url: "dummy url",
   modifiers: {},
 };

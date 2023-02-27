@@ -27,11 +27,12 @@ Deno.test("makeTagItem_ok1", async () => {
   // prepare
   const expected_tag = test_data.expected_tag1;
   const expected_mod = expected_tag.modifiers.sort;
+  const name = expected_tag.name;
   const url = expected_tag.url;
   const cms = new movabletype();
 
   // execute
-  const item = await cms.makeTagItem(url);
+  const item = await cms.makeTagItem(url, name);
 
   // assert
   assertEquals(item.name, expected_tag.name);
@@ -47,11 +48,12 @@ Deno.test("makeTagItem_ok1", async () => {
 Deno.test("makeTagItem_ok2", async () => {
   // prepare
   const expected_tag = test_data.expected_tag2;
+  const name = expected_tag.name;
   const url = expected_tag.url;
   const cms = new movabletype();
 
   // execute
-  const item = await cms.makeTagItem(url);
+  const item = await cms.makeTagItem(url, name);
 
   // assert
   assertEquals(item.name, expected_tag.name);
@@ -62,16 +64,17 @@ Deno.test("makeTagItem_ok2", async () => {
 
 Deno.test("makeTagItem_ng_invalid_url", async () => {
   // prepare
-  const expected_tag = utils.dummyItem;
-  const url = "invalid url invalid url";
+  const expected_tag = test_data.invalidUrlItem;
+  const name = expected_tag.name;
+  const url = expected_tag.url;
   const cms = new movabletype();
 
   // execute
-  const item = await cms.makeTagItem(url);
+  const item = await cms.makeTagItem(url, name);
 
   // assert
   assertEquals(item.name, expected_tag.name);
-  assertEquals(item.url, url);
+  assertEquals(item.url, expected_tag.url);
   assertEquals(item.type, expected_tag.type);
   assertEquals(item.description, expected_tag.description);
 });

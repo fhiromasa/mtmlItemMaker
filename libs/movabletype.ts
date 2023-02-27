@@ -62,13 +62,15 @@ export default class movabletype {
     const tagItemArray: Array<utils.TItem> = await Promise.all(
       Object.values(nodeList).map(
         async (_node, index): Promise<utils.TItem> => {
-          const url = document.querySelector(
-            `${this.TAG_SELECTOR}:nth-child(${index}) > h2 > a`,
-          )?.getAttribute("href");
+          const li = document.querySelector(
+            `${this.TAG_SELECTOR}:nth-child(${index})`,
+          );
+          const url = li?.querySelector("h2 > a")?.getAttribute("href");
+          const name = li?.querySelector("h2 > a")?.textContent || "";
 
           if (!url) return utils.dummyItem;
 
-          const item = await this.makeTagItem(url);
+          const item = await this.makeTagItem(url, name);
           return item;
         },
       ),
@@ -87,6 +89,7 @@ export default class movabletype {
    */
   readonly makeTagItem = async (
     url: string,
+    name: string,
   ): Promise<utils.TItem> => {
     let cc;
     try {
@@ -94,10 +97,7 @@ export default class movabletype {
     } catch (error) {
       console.log(error.message);
       const dummy = Object.assign({}, utils.dummyItem);
-      dummy.name = "mt" + url.replace(
-        /^.*\/tags\//,
-        "",
-      ).replace(/\.html/, "");
+      dummy.name = utils.normalizeTagName(name);
       dummy.url = url;
       return dummy;
     }
