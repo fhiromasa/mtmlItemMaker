@@ -179,7 +179,7 @@ export const writeItems = async (
     items[element.name] = element;
   });
 
-  delete items["dummy"];
+  delete items[dummyItem.name.toLowerCase()];
 
   return await Deno.writeTextFile(filename, JSON.stringify(items));
 };
