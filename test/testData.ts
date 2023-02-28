@@ -1,5 +1,13 @@
 import * as utils from "../libs/utils.ts";
 
+export const invalidUrlItem: utils.TItem = {
+  name: "MTInvalidURLItem",
+  description: utils.dummyItem.description,
+  type: utils.dummyItem.type,
+  url: "invalid url",
+  modifiers: {},
+};
+
 export const expected_tag1: utils.TItem = {
   name: "MTActions",
   description: [

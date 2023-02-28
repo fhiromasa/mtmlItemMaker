@@ -32,6 +32,7 @@ export enum ERROR_MESSAGES {
   notTagName = "is not tag name",
   fetch = "fetch error in ",
 }
+export type TNameAndURL = { name: string; url: string };
 
 /**
  * @param url
@@ -189,4 +190,22 @@ export const dummyItem: TItem = {
   description: "dummy description",
   url: "dummy url",
   modifiers: {},
+};
+export const divideIntoHundredPieces = (
+  nameAndURL: TNameAndURL[],
+): TNameAndURL[][] => {
+  const hundred: TNameAndURL[][] = new Array(
+    Math.floor(nameAndURL.length / 100) + 1,
+  );
+  for (let i = 0; i < hundred.length; i++) {
+    const tempArray = new Array(100);
+    for (let j = 0; j < 100; j++) {
+      if (!nameAndURL[100 * i + j]) {
+        break;
+      }
+      tempArray[j] = nameAndURL[100 * i + j];
+    }
+    hundred[i] = tempArray;
+  }
+  return hundred;
 };

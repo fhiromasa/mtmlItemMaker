@@ -1,5 +1,5 @@
 import * as utils from "./utils.ts";
-import { deno_dom } from "./deps.ts";
+import { deno_dom, sleep } from "./deps.ts";
 
 export default class movabletype {
   readonly TAG_URL =
@@ -58,24 +58,41 @@ export default class movabletype {
     const document = await utils.fetchDocument(this.TAG_URL);
     const nodeList = document.querySelectorAll(this.TAG_SELECTOR);
 
-    const items: utils.TItems = {};
-    const tagItemArray: Array<utils.TItem> = await Promise.all(
-      Object.values(nodeList).map(
-        async (_node, index): Promise<utils.TItem> => {
-          const li = document.querySelector(
-            `${this.TAG_SELECTOR}:nth-child(${index})`,
-          );
-          const url = li?.querySelector("h2 > a")?.getAttribute("href");
-          const name = li?.querySelector("h2 > a")?.textContent || "";
-
-          if (!url) return utils.dummyItem;
-
-          const item = await this.makeTagItem(url, name);
-          return item;
-        },
-      ),
+    const nameAndURL: utils.TNameAndURL[] = Object.values(
+      nodeList,
+    ).map(
+      (_node, index) => {
+        const li = document.querySelector(
+          `${this.TAG_SELECTOR}:nth-child(${index + 1})`,
+        );
+        const url = li?.querySelector("h2 > a")?.getAttribute("href") || "";
+        const name = li?.querySelector("h2 > a")?.textContent || "";
+        return { url: url, name: name };
+      },
     );
-    tagItemArray.forEach((item) => {
+    console.log(`${nameAndURL.length}個のタグアイテムが見つかりました。`);
+
+    // 100個づつの配列にする
+    const hundred = utils.divideIntoHundredPieces(nameAndURL);
+
+    console.log(`100個づつ${hundred.length}回にわけてfetchを実行します。`);
+    let _tagItemArray: Array<utils.TItem> = [];
+    for (let i = 0; i < hundred.length; i++) {
+      console.log(`hundred[${i}].length = ${hundred[i].length}`);
+      console.log(`n秒待機`);
+      await sleep(3);
+      const itemsArray = await Promise.all(
+        hundred[i].map(async (item) => {
+          // console.log(item.name);
+          return await this.makeTagItem(item.url, item.name);
+        }),
+      );
+      _tagItemArray = Array.prototype.concat(_tagItemArray, itemsArray);
+    }
+
+    const items: utils.TItems = {};
+    _tagItemArray.forEach((item) => {
+      if (!item) return;
       items[item.name.toLowerCase()] = item;
     });
 
@@ -94,8 +111,8 @@ export default class movabletype {
     let cc;
     try {
       cc = await utils.fetchElement(url, this.TAG_MODIFIER_SELECTOR);
-    } catch (error) {
-      console.log(error.message);
+    } catch (_error) {
+      // console.log(error.message);
       const dummy = Object.assign({}, utils.dummyItem);
       dummy.name = utils.normalizeTagName(name);
       dummy.url = url;
@@ -129,6 +146,10 @@ export default class movabletype {
 
   /**
    * dt, ddからModifierを作る
+   * FIX: https://www.movabletype.jp/documentation/appendices/tags/archivelist.html
+   *    の１つ目のモディファイアが適切に取得できていない部分があるのでいずれ直す。放置でもいいと思う
+   * FIX: https://www.movabletype.jp/documentation/appendices/tags/assets.html
+   *    のモディファイアがdtが連続しているところがあって適切に取得できていない
    * @param dt
    * @param dd
    * @returns
