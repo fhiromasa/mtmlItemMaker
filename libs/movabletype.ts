@@ -5,7 +5,7 @@ export default class movabletype {
   readonly TAG_URL =
     "https://www.movabletype.jp/documentation/appendices/tags/";
   readonly TAG_SELECTOR = "ul.entrylist-with-topborder > li";
-  readonly TAG_MODIFIER_SELECTOR = "div.content-main > article.entry-detail";
+  readonly TAG_DETAIL_SELECTOR = "div.content-main > article.entry-detail";
   readonly MODIFIER_URL =
     "https://www.movabletype.jp/documentation/appendices/modifiers/";
   readonly MODIFIER_SELECTOR = "ul.entrylist-with-topborder > li";
@@ -110,7 +110,7 @@ export default class movabletype {
   ): Promise<utils.TItem> => {
     let cc;
     try {
-      cc = await utils.fetchElement(url, this.TAG_MODIFIER_SELECTOR);
+      cc = await utils.fetchElement(url, this.TAG_DETAIL_SELECTOR);
     } catch (_error) {
       // console.log(error.message);
       const dummy = Object.assign({}, utils.dummyItem);

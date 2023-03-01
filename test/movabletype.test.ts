@@ -1,6 +1,6 @@
 import { assertEquals, assertNotEquals } from "./testDeps.ts";
 import movabletype from "../libs/movabletype.ts";
-import * as test_data from "./testData.ts";
+import { movabletype_testData } from "./testData.ts";
 import * as utils from "../libs/utils.ts";
 
 /**
@@ -13,6 +13,7 @@ Deno.test("property", () => {
   const cms = new movabletype();
   assertNotEquals(cms.TAG_URL, "");
   assertNotEquals(cms.TAG_SELECTOR, "");
+  assertNotEquals(cms.TAG_DETAIL_SELECTOR, "");
   assertNotEquals(cms.MODIFIER_URL, "");
   assertNotEquals(cms.MODIFIER_SELECTOR, "");
   assertNotEquals(cms.FILENAME, "");
@@ -25,7 +26,7 @@ Deno.test("property", () => {
  */
 Deno.test("makeTagItem_ok1", async () => {
   // prepare
-  const expected_tag = test_data.expected_tag1;
+  const expected_tag = movabletype_testData.expected_tag1;
   const expected_mod = expected_tag.modifiers.sort;
   const name = expected_tag.name;
   const url = expected_tag.url;
@@ -47,7 +48,7 @@ Deno.test("makeTagItem_ok1", async () => {
 
 Deno.test("makeTagItem_ok2", async () => {
   // prepare
-  const expected_tag = test_data.expected_tag2;
+  const expected_tag = movabletype_testData.expected_tag2;
   const name = expected_tag.name;
   const url = expected_tag.url;
   const cms = new movabletype();
@@ -64,7 +65,7 @@ Deno.test("makeTagItem_ok2", async () => {
 
 Deno.test("makeTagItem_ng_invalid_url", async () => {
   // prepare
-  const expected_tag = test_data.invalidUrlItem;
+  const expected_tag = movabletype_testData.invalidUrlItem;
   const name = expected_tag.name;
   const url = expected_tag.url;
   const cms = new movabletype();
@@ -87,7 +88,7 @@ Deno.test("makeTagItem_ng_invalid_url", async () => {
  */
 // Deno.test("makeTagItems_ok", async () => {
 //   // prepare
-//   const expected_tag = test_data.expected_tag1;
+//   const expected_tag = movabletype_testData.expected_tag1;
 //   const expected_mod = expected_tag.modifiers.sort;
 //   const cms = new movabletype();
 
@@ -113,7 +114,7 @@ Deno.test("makeTagItem_ng_invalid_url", async () => {
  */
 Deno.test("makeModifierItems_ok", async () => {
   // prepare
-  const expected_modifier = test_data.expected_modifier;
+  const expected_modifier = movabletype_testData.expected_modifier;
   const cms = new movabletype();
 
   // execute
@@ -131,7 +132,7 @@ Deno.test("makeModifierItems_ok", async () => {
  */
 Deno.test("makeTagItems_new_ng", async () => {
   // prepare
-  const expected_tag = test_data.expected_tag1;
+  const expected_tag = movabletype_testData.expected_tag1;
   const _expected_mod = expected_tag.modifiers.sort;
   const cms = new movabletype();
 
