@@ -191,6 +191,14 @@ export const dummyItem: TItem = {
   url: "dummy url",
   modifiers: {},
 };
+
+/**
+ * 配列を100個づつの２次元配列に分割する
+ * TODO:任意の数に分割できるようにしたい。defaultで100
+ * TODO:最後の配列も100になってて空の配列要素になってるから余りの分で配列を初期化するようにしたい
+ * @param nameAndURL
+ * @returns
+ */
 export const divideIntoHundredPieces = (
   nameAndURL: TNameAndURL[],
 ): TNameAndURL[][] => {

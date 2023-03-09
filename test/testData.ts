@@ -1,5 +1,23 @@
 import * as utils from "../libs/utils.ts";
 
+export const movabletype_net_testData = {
+  expected_tag1: {
+    name: "MTAsset",
+    url: "https://movabletype.net/tags/2007/08/asset.html",
+    type: "undefined",
+    description:
+      "id モディファイアで指定した単一のアイテムを表示する為のブロックタグです。",
+    modifiers: {
+      id: {
+        name: "id",
+        value: "ID",
+        description: "表示させたいアイテムの id を指定します。",
+        type: "local",
+      },
+    },
+  },
+};
+
 export const movabletype_testData = {
   invalidUrlItem: {
     name: "MTInvalidURLItem",

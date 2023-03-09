@@ -1,4 +1,4 @@
-import { assertEquals, assertNotEquals } from "./testDeps.ts";
+import { asserts } from "./testDeps.ts";
 import movabletype from "../libs/movabletype.ts";
 import { movabletype_testData } from "./testData.ts";
 import * as utils from "../libs/utils.ts";
@@ -11,12 +11,12 @@ import * as utils from "../libs/utils.ts";
  */
 Deno.test("property", () => {
   const cms = new movabletype();
-  assertNotEquals(cms.TAG_URL, "");
-  assertNotEquals(cms.TAG_SELECTOR, "");
-  assertNotEquals(cms.TAG_DETAIL_SELECTOR, "");
-  assertNotEquals(cms.MODIFIER_URL, "");
-  assertNotEquals(cms.MODIFIER_SELECTOR, "");
-  assertNotEquals(cms.FILENAME, "");
+  asserts.assertNotEquals(cms.TAG_URL, "");
+  asserts.assertNotEquals(cms.TAG_SELECTOR, "");
+  asserts.assertNotEquals(cms.TAG_DETAIL_SELECTOR, "");
+  asserts.assertNotEquals(cms.MODIFIER_URL, "");
+  asserts.assertNotEquals(cms.MODIFIER_SELECTOR, "");
+  asserts.assertNotEquals(cms.FILENAME, "");
 });
 
 /**
@@ -36,14 +36,17 @@ Deno.test("makeTagItem_ok1", async () => {
   const item = await cms.makeTagItem(url, name);
 
   // assert
-  assertEquals(item.name, expected_tag.name);
-  assertEquals(item.url, expected_tag.url);
-  assertEquals(item.type, expected_tag.type);
-  assertEquals(item.description, expected_tag.description);
-  assertEquals(item.modifiers.sort.name, expected_mod.name);
-  assertEquals(item.modifiers.sort.value, expected_mod.value);
-  assertEquals(item.modifiers.sort.description, expected_mod.description);
-  assertEquals(item.modifiers.sort.type, expected_mod.type);
+  asserts.assertEquals(item.name, expected_tag.name);
+  asserts.assertEquals(item.url, expected_tag.url);
+  asserts.assertEquals(item.type, expected_tag.type);
+  asserts.assertEquals(item.description, expected_tag.description);
+  asserts.assertEquals(item.modifiers.sort.name, expected_mod.name);
+  asserts.assertEquals(item.modifiers.sort.value, expected_mod.value);
+  asserts.assertEquals(
+    item.modifiers.sort.description,
+    expected_mod.description,
+  );
+  asserts.assertEquals(item.modifiers.sort.type, expected_mod.type);
 });
 
 Deno.test("makeTagItem_ok2", async () => {
@@ -57,10 +60,10 @@ Deno.test("makeTagItem_ok2", async () => {
   const item = await cms.makeTagItem(url, name);
 
   // assert
-  assertEquals(item.name, expected_tag.name);
-  assertEquals(item.url, expected_tag.url);
-  assertEquals(item.type, expected_tag.type);
-  assertEquals(item.description, expected_tag.description);
+  asserts.assertEquals(item.name, expected_tag.name);
+  asserts.assertEquals(item.url, expected_tag.url);
+  asserts.assertEquals(item.type, expected_tag.type);
+  asserts.assertEquals(item.description, expected_tag.description);
 });
 
 Deno.test("makeTagItem_ng_invalid_url", async () => {
@@ -74,10 +77,10 @@ Deno.test("makeTagItem_ng_invalid_url", async () => {
   const item = await cms.makeTagItem(url, name);
 
   // assert
-  assertEquals(item.name, expected_tag.name);
-  assertEquals(item.url, expected_tag.url);
-  assertEquals(item.type, expected_tag.type);
-  assertEquals(item.description, expected_tag.description);
+  asserts.assertEquals(item.name, expected_tag.name);
+  asserts.assertEquals(item.url, expected_tag.url);
+  asserts.assertEquals(item.type, expected_tag.type);
+  asserts.assertEquals(item.description, expected_tag.description);
 });
 
 /**
@@ -97,14 +100,14 @@ Deno.test("makeTagItem_ng_invalid_url", async () => {
 //   const actual = items[expected_tag.name.toLowerCase()];
 
 //   // assert
-//   assertEquals(actual.name, expected_tag.name);
-//   assertEquals(actual.url, expected_tag.url);
-//   assertEquals(actual.type, expected_tag.type);
-//   assertEquals(actual.description, expected_tag.description);
-//   assertEquals(actual.modifiers.sort.name, expected_mod.name);
-//   assertEquals(actual.modifiers.sort.value, expected_mod.value);
-//   assertEquals(actual.modifiers.sort.description, expected_mod.description);
-//   assertEquals(actual.modifiers.sort.type, expected_mod.type);
+//   asserts.assertEquals(actual.name, expected_tag.name);
+//   asserts.assertEquals(actual.url, expected_tag.url);
+//   asserts.assertEquals(actual.type, expected_tag.type);
+//   asserts.assertEquals(actual.description, expected_tag.description);
+//   asserts.assertEquals(actual.modifiers.sort.name, expected_mod.name);
+//   asserts.assertEquals(actual.modifiers.sort.value, expected_mod.value);
+//   asserts.assertEquals(actual.modifiers.sort.description, expected_mod.description);
+//   asserts.assertEquals(actual.modifiers.sort.type, expected_mod.type);
 // });
 
 /**
@@ -121,7 +124,7 @@ Deno.test("makeModifierItems_ok", async () => {
   const actual = await cms.makeModifierItems();
 
   // assert
-  assertEquals(actual.capitalize.name, expected_modifier.name);
+  asserts.assertEquals(actual.capitalize.name, expected_modifier.name);
 });
 
 /**
@@ -144,10 +147,10 @@ Deno.test("makeTagItems_new_ng", async () => {
   let c = 0;
   arr.forEach((item) => {
     console.log(`${c}.assert ` + item.name);
-    assertNotEquals(item.description, utils.dummyItem.description);
+    asserts.assertNotEquals(item.description, utils.dummyItem.description);
     // MTAuthorFavoriteEntriesがBlockタグだけどクラスがついていないためtestできない
-    // assertNotEquals(item.type, utils.dummyItem.type);
+    // asserts.assertNotEquals(item.type, utils.dummyItem.type);
     c++;
   });
-  // assertEquals(arr.length, 690);
+  // asserts.assertEquals(arr.length, 690);
 });
