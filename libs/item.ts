@@ -6,17 +6,20 @@ interface IItem {
 
 type TItemType = TTagType | TGlobalModifierType | TTagModifierType;
 
-type TTagType = TBlockTagType | TFunctionTagType | "undefined";
+export type TTagType = TBlockTagType | TFunctionTagType | "undefined";
 type TBlockTagType = "block";
 type TFunctionTagType = "function";
 
 type TGlobalModifierType = "global";
 type TTagModifierType = "local";
 
-type TLocalModifiers = {
+export type TLocalModifiers = {
   [name: string]: LocalModifier;
 };
 
+/**
+ * Tagのアブストラクトクラス
+ */
 export class Tag implements IItem {
   name: string;
   type: TTagType | string;
@@ -39,6 +42,9 @@ export class Tag implements IItem {
   }
 }
 
+/**
+ * FunctionTagクラス
+ */
 export class FunctionTag extends Tag {
   constructor(
     name: string,
@@ -49,6 +55,10 @@ export class FunctionTag extends Tag {
     super(name, "function", description, url, modifiers);
   }
 }
+
+/**
+ * BlockTagクラス
+ */
 export class BlockTag extends Tag {
   constructor(
     name: string,
@@ -59,6 +69,10 @@ export class BlockTag extends Tag {
     super(name, "block", description, url, modifiers);
   }
 }
+
+/**
+ * GlobalModifierクラス
+ */
 export class GlobalModifier implements IItem {
   name: string;
   type: TGlobalModifierType | string;
@@ -71,6 +85,11 @@ export class GlobalModifier implements IItem {
     this.url = url;
   }
 }
+
+/**
+ * LocalModifierクラス
+ * Tagクラスのメンバとして
+ */
 export class LocalModifier implements IItem {
   name: string;
   description: string;

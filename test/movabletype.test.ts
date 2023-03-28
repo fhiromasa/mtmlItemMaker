@@ -2,6 +2,7 @@ import { assertEquals, assertNotEquals } from "./testDeps.ts";
 import movabletype from "../libs/movabletype.ts";
 import { movabletype_testData } from "./testData.ts";
 import * as utils from "../libs/utils.ts";
+import { TGlobalModifiers } from "../libs/item.ts";
 
 /**
  * --------------------------------
@@ -109,16 +110,22 @@ Deno.test("makeTagItem_ng_invalid_url", async () => {
 
 /**
  * --------------------------------
- * makeModifierItems()
+ * makeGlobalModifierArr()
  * --------------------------------
  */
-Deno.test("makeModifierItems_ok", async () => {
+Deno.test("makeGlobalModifierArr_ok", async () => {
   // prepare
   const expected_modifier = movabletype_testData.expected_modifier;
   const cms = new movabletype();
 
   // execute
-  const actual = await cms.makeModifierItems();
+  const arr = await cms.makeGlobalModifierArr();
+
+  // assertion prepare
+  const actual: TGlobalModifiers = {};
+  arr.forEach((elm) => {
+    actual[elm.name.toLowerCase()] = elm;
+  });
 
   // assert
   assertEquals(actual.capitalize.name, expected_modifier.name);
@@ -126,26 +133,25 @@ Deno.test("makeModifierItems_ok", async () => {
 
 /**
  * --------------------------------
- * makeTagItems()
+ * makeTagArr()
  * 攻撃的なプログラムなのであまりテストもしないように！！
  * --------------------------------
  */
-Deno.test("makeTagItems_new_ng", async () => {
+Deno.test("makeTagArr_new_ng", async () => {
   // prepare
   const expected_tag = movabletype_testData.expected_tag1;
   const _expected_mod = expected_tag.modifiers.sort;
   const cms = new movabletype();
 
   // execute
-  const items = await cms.makeTagItems();
-  const arr = Object.values(items);
+  const arr = await cms.makeTagArr();
 
   // assert
   let c = 0;
   arr.forEach((item) => {
     console.log(`${c}.assert ` + item.name);
-    assertNotEquals(item.description, utils.dummyItem.description);
-    // MTAuthorFavoriteEntriesがBlockタグだけどクラスがついていないためtestできない
+    assertNotEquals(item.description, utils.dummyTag.description);
+    // ↓MTAuthorFavoriteEntriesがBlockタグだけどクラスがついていないためtestできない
     // assertNotEquals(item.type, utils.dummyItem.type);
     c++;
   });

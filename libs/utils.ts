@@ -1,24 +1,8 @@
 import { deno_dom, isURL } from "./deps.ts";
+import { GlobalModifier, Tag, TItem, TTagType } from "./item.ts";
 
 export type TItems = {
   [string: string]: TItem;
-};
-export type TItem = {
-  name: string;
-  url: string;
-  type: TItemType;
-  description: string;
-  modifiers: TModifiers;
-};
-export type TItemType = "global" | "function" | "block" | "undefined";
-export type TModifiers = {
-  [string: string]: TModifier;
-};
-export type TModifier = {
-  name: string;
-  type: "local";
-  value: string;
-  description: string;
 };
 
 export enum ERROR_MESSAGES {
@@ -108,7 +92,7 @@ export const normalizeTagName = (name: string): string => {
  * @param type
  * @returns
  */
-export const discriminateType = (type: string): TItemType => {
+export const discriminateType = (type: string): TTagType => {
   if (type.match(/function/i)) {
     return "function";
   }
@@ -131,7 +115,7 @@ export const descriptionEscapeHTML = (nodeList: deno_dom.NodeList): string => {
   const description: Array<string> = [];
   nodeList.forEach((node) => {
     const desc = node.textContent;
-    if (!desc.match(/^\s*$/)) {
+    if (!desc.match(/^\s*$/)) { //改行だけの行は飛ばす
       description.push(textFormat(desc));
     }
   });
@@ -154,6 +138,21 @@ export const textFormat = (description: string): string => {
     .replace(/\s*$/, "");
 };
 
+export const writeArr = async (
+  filename: string,
+  arr: Array<Tag | GlobalModifier>,
+) => {
+  if (!filename.match(/\.json$/)) {
+    throw new Error(ERROR_MESSAGES.filename);
+  }
+  const items: TItems = {};
+  arr.forEach((item) => {
+    items[item.name.toLowerCase()] = item;
+  });
+
+  return await Deno.writeTextFile(filename, JSON.stringify(items));
+};
+
 /**
  * @param filename
  * @param tagItems
@@ -163,47 +162,59 @@ export const textFormat = (description: string): string => {
  */
 export const writeItems = async (
   filename: string,
-  tagItems: TItems,
-  modifierItems: TItems,
+  tagArray: Array<Tag>,
+  modifierArray: Array<GlobalModifier>,
 ) => {
   if (!filename.match(/\.json$/)) {
     throw new Error(ERROR_MESSAGES.filename);
   }
-  const tagArray = Object.values(tagItems);
-  const modifierArray = Object.values(modifierItems);
   if (tagArray.length === 0 && modifierArray.length === 0) {
     throw new Error(ERROR_MESSAGES.item);
   }
-  const items = tagItems;
-  modifierArray.forEach((element) => {
-    items[element.name] = element;
+  const items: TItems = {};
+  tagArray.forEach((tag) => {
+    items[tag.name.toLowerCase()] = tag;
+  });
+  modifierArray.forEach((modifier) => {
+    items[modifier.name.toLowerCase()] = modifier;
   });
 
-  delete items[dummyItem.name.toLowerCase()];
+  delete items[dummyTag.name.toLowerCase()];
 
   return await Deno.writeTextFile(filename, JSON.stringify(items));
 };
 
-export const dummyItem: TItem = {
-  name: "MTDummy",
-  type: "undefined",
-  description: "dummy description",
-  url: "dummy url",
-  modifiers: {},
-};
+export const dummyTag = new Tag(
+  "MTDummy",
+  "undefined",
+  "dummy description",
+  "dummy url",
+  {},
+);
+
+/**
+ * デフォルトで100個づつに分割して配列を返す
+ * @param nameAndURL
+ * @param divide_by
+ * @returns
+ */
 export const divideIntoHundredPieces = (
   nameAndURL: TNameAndURL[],
+  divide_by = 100,
 ): TNameAndURL[][] => {
   const hundred: TNameAndURL[][] = new Array(
-    Math.floor(nameAndURL.length / 100) + 1,
+    Math.floor(nameAndURL.length / divide_by) + 1,
   );
   for (let i = 0; i < hundred.length; i++) {
-    const tempArray = new Array(100);
-    for (let j = 0; j < 100; j++) {
-      if (!nameAndURL[100 * i + j]) {
+    const arr_length = (hundred.length - 1 === i)
+      ? nameAndURL.length - divide_by * i
+      : divide_by;
+    const tempArray = new Array(arr_length);
+    for (let j = 0; j < divide_by; j++) {
+      if (!nameAndURL[divide_by * i + j]) {
         break;
       }
-      tempArray[j] = nameAndURL[100 * i + j];
+      tempArray[j] = nameAndURL[divide_by * i + j];
     }
     hundred[i] = tempArray;
   }
