@@ -22,6 +22,8 @@ export default class movabletype {
     utils.writeArr(`${this.FILENAME}tag.json`, _tagItems);
 
     utils.writeArr(`${this.FILENAME}modifier.json`, _modifierItems);
+
+    utils.writeItems(`./data/movabletype.json`, _tagItems, _modifierItems);
   };
 
   /**
