@@ -37,25 +37,25 @@ Deno.test("fetchDocument_ng_invalid_url", async () => {
 
 /**
  * --------------------------------
- * elementFromURL()
+ * fetchElement()
  * - fetch errorの再現はできない
  * - parse errorの再現はできない
  * --------------------------------
  */
-Deno.test("elementFromURL_ok", async () => {
+Deno.test("fetchElement_ok", async () => {
   // prepare
   const url = "https://example.com";
   const selector = "h1";
   const expected = "Example Domain";
 
   // execute
-  const element = await utils.elementFromURL(url, selector);
+  const element = await utils.fetchElement(url, selector);
 
   // assert
   assertEquals(element?.textContent, expected);
 });
 
-Deno.test("elementFromURL_ng_invalid_selector", async () => {
+Deno.test("fetchElement_ng_invalid_selector", async () => {
   // prepare
   const url = "https://example.com";
   const selector = "";
@@ -63,14 +63,14 @@ Deno.test("elementFromURL_ng_invalid_selector", async () => {
 
   try {
     // execute
-    await utils.elementFromURL(url, selector);
+    await utils.fetchElement(url, selector);
   } catch (actual_error) {
     // assert
     assertEquals(actual_error.message, expected);
   }
 });
 
-Deno.test("elementFromURL_ng_nullSelector", async () => {
+Deno.test("fetchElement_ng_nullSelector", async () => {
   // prepare
   const url = "https://example.com";
   const selector = "article";
@@ -78,7 +78,7 @@ Deno.test("elementFromURL_ng_nullSelector", async () => {
 
   try {
     // execute
-    await utils.elementFromURL(url, selector);
+    await utils.fetchElement(url, selector);
   } catch (actual_error) {
     // assert
     assertEquals(actual_error.message, expected);
@@ -165,4 +165,22 @@ Deno.test("descriptionEscapeHTML_ok", () => {
 
   // assert
   assertEquals(actual, expected);
+});
+
+/**
+ * --------------------------------
+ * divideIntoHundredPieces()
+ * --------------------------------
+ */
+Deno.test("divideIntoHundredPieces_ok", () => {
+  // prepare
+  const nameAndURL: utils.TNameAndURL[] = new Array(189);
+
+  // execute
+  const actual = utils.divideIntoHundredPieces(nameAndURL);
+
+  // assert
+  assertEquals(actual.length, 2);
+  assertEquals(actual[0].length, 100);
+  assertEquals(actual[1].length, 89);
 });
