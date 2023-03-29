@@ -124,6 +124,7 @@ export const descriptionEscapeHTML = (nodeList: deno_dom.NodeList): string => {
 
 /**
  * 1. 先頭の空白を消去
+ * 1. 先頭のコロン:を消去
  * 2. 全ての改行を消去
  * 3. ２つ以上の連続する空白を空白１つに置換
  * 4. 末尾の空白を消去
@@ -133,6 +134,7 @@ export const descriptionEscapeHTML = (nodeList: deno_dom.NodeList): string => {
 export const textFormat = (description: string): string => {
   return description
     .replace(/^\s*/, "")
+    .replace(/^[:：]\s*/, "")
     .replace(/[\n]/g, "")
     .replace(/\s{2,}/g, " ")
     .replace(/\s*$/, "");

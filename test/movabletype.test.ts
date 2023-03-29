@@ -86,33 +86,6 @@ Deno.test("makeTagItem_ng_invalid_url", async () => {
 
 /**
  * --------------------------------
- * makeTagItems()
- * 攻撃的なプログラムなのであまりテストもしないように！！
- * --------------------------------
- */
-// Deno.test("makeTagItems_ok", async () => {
-//   // prepare
-//   const expected_tag = movabletype_testData.expected_tag1;
-//   const expected_mod = expected_tag.modifiers.sort;
-//   const cms = new movabletype();
-
-//   // execute
-//   const items = await cms.makeTagItems();
-//   const actual = items[expected_tag.name.toLowerCase()];
-
-//   // assert
-//   asserts.assertEquals(actual.name, expected_tag.name);
-//   asserts.assertEquals(actual.url, expected_tag.url);
-//   asserts.assertEquals(actual.type, expected_tag.type);
-//   asserts.assertEquals(actual.description, expected_tag.description);
-//   asserts.assertEquals(actual.modifiers.sort.name, expected_mod.name);
-//   asserts.assertEquals(actual.modifiers.sort.value, expected_mod.value);
-//   asserts.assertEquals(actual.modifiers.sort.description, expected_mod.description);
-//   asserts.assertEquals(actual.modifiers.sort.type, expected_mod.type);
-// });
-
-/**
- * --------------------------------
  * makeGlobalModifierArr()
  * --------------------------------
  */
@@ -132,6 +105,32 @@ Deno.test("makeGlobalModifierArr_ok", async () => {
 
   // assert
   asserts.assertEquals(actual.capitalize.name, expected_modifier.name);
+});
+/**
+ * --------------------------------
+ * makeGlobalModifierArr()
+ * --------------------------------
+ */
+Deno.test("makeGlobalModifierArr_ok_default", async () => {
+  // prepare
+  const expected_modifier = movabletype_testData.expected_modifier2;
+  const cms = new movabletype();
+
+  // execute
+  const _actual = await cms.makeGlobalModifierArr();
+
+  // assertion prepare
+  const items: TGlobalModifiers = {};
+  _actual.forEach((elm) => {
+    items[elm.name.toLowerCase()] = elm;
+  });
+  const actual = items["_default"];
+
+  // assert
+  asserts.assertEquals(actual.name, expected_modifier.name);
+  asserts.assertEquals(actual.url, expected_modifier.url);
+  asserts.assertEquals(actual.type, expected_modifier.type);
+  asserts.assertEquals(actual.description, expected_modifier.description);
 });
 
 /**

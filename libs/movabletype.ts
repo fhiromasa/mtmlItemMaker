@@ -38,7 +38,7 @@ export default class movabletype {
     const items: Array<GlobalModifier> = [];
     nodeList.forEach((_node, index) => {
       const li = document.querySelector(
-        `${this.MODIFIER_SELECTOR}:nth-child(${index})`,
+        `${this.MODIFIER_SELECTOR}:nth-child(${index + 1})`,
       );
       if (!li) return;
       const item = new GlobalModifier(
