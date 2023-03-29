@@ -1,6 +1,44 @@
 import * as utils from "../libs/utils.ts";
 import { GlobalModifier, LocalModifier, Tag } from "../libs/item.ts";
 
+export const powercms_testData = {
+  expected_tag1: new Tag(
+    "MTAudioCustomFieldDescription",
+    "function",
+    "オーディオ システムオブジェクトに追加した、カスタムフィールドの概要を表示します。",
+    "https://www.powercms.jp/products/document/template-tags/audiocustomfielddescription.html",
+    {},
+  ),
+  expected_tag2: new Tag(
+    "MTAssets",
+    "block",
+    "ブログのアイテム一覧のためのブロックタグです。モディファイアを指定することで、特定の条件にあてはまるアイテムだけを抜き出すことや、日付順で指定した数のアイテムを一覧することができます。",
+    "https://www.powercms.jp/products/document/template-tags/assets.html",
+    {
+      lastn: new LocalModifier(
+        "lastn",
+        "指定した数字のアイテムを表示します。N は 0 より大きな数字にしてください。",
+        "N",
+      ),
+      assets_per_row: new LocalModifier(
+        "assets_per_row",
+        "MTAssetIsFirstInRow, MTAssetIsLastInRow タグを使用して、画像の一覧を作成する際に、一行に表示するアイテム数 N 件を設定します。",
+        "N",
+      ),
+    },
+  ),
+  expected_mod1: new GlobalModifier(
+    "absolute",
+    "URL を絶対パスに変更します。",
+    "https://www.powercms.jp/products/document/modifiers/absolute.html",
+  ),
+  expected_mod2: new GlobalModifier(
+    "zero_pad",
+    "タグの値を、全体で N 文字になるよう、余白を 0 で埋めます。",
+    "https://www.powercms.jp/products/document/modifiers/zero_pad.html",
+  ),
+};
+
 export const movabletype_net_testData = {
   expected_tag1: new Tag(
     "MTAsset",

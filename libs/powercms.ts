@@ -2,61 +2,54 @@ import * as utils from "./utils.ts";
 import { GlobalModifier, LocalModifier, Tag, TLocalModifiers } from "./item.ts";
 import { deno_dom, sleep } from "./deps.ts";
 
-export default class movabletype {
-  readonly TAG_URL = "https://movabletype.net/tags/";
-  readonly TAG_SELECTOR = "#support-top-navi li";
-  readonly TAG_DETAIL_SELECTOR = "article#entry-detail";
-  readonly MODIFIER_URL = "https://movabletype.net/tags/modifiers.html";
-  readonly MODIFIER_SELECTOR = "li.hentry";
-  readonly FILENAME = "./data/movabletype_net";
+export default class powercms {
+  readonly TAG_URL = "https://www.powercms.jp/products/document/template-tags/";
+  readonly TAG_SELECTOR = "ul.listBlock > li";
+  readonly TAG_DETAIL_SELECTOR = "div#primary";
+  readonly MODIFIER_URL =
+    "https://www.powercms.jp/products/document/modifiers/";
+  readonly MODIFIER_SELECTOR = "dl.listBlock dt";
+  readonly FILENAME = "./data/powercms";
 
   readonly main = async () => {
-    // タグのアイテム配列を作る
-    const _tagArr = await this.makeTagArr();
+    // タグの配列を作る
+    const _tagItems = await this.makeTagArr();
     // モディファイアのアイテム配列を作る
-    const _modifierArr = await this.makeGlobalModifierArr();
+    const _modifierItems = await this.makeGlobalModifierArr();
 
-    // Tagの書き込み
-    utils.writeArr(`${this.FILENAME}/tag.json`, _tagArr);
-    // GlobalModifierの書き込み
-    utils.writeArr(`${this.FILENAME}/modifier.json`, _modifierArr);
     // ふたつを合体してthis.filenameに書き込む
-    utils.writeItems(`${this.FILENAME}.json`, _tagArr, _modifierArr);
+    utils.writeArr(`${this.FILENAME}/tag.json`, _tagItems);
+
+    utils.writeArr(`${this.FILENAME}/modifier.json`, _modifierItems);
+
+    utils.writeItems(`${this.FILENAME}.json`, _tagItems, _modifierItems);
   };
 
-  /**
-   * グローバルモディファイアの配列を作る
-   * fetch 1回
-   * @returns
-   */
   readonly makeGlobalModifierArr = async (): Promise<Array<GlobalModifier>> => {
     const document = await utils.fetchDocument(this.MODIFIER_URL);
     const nodeList = document.querySelectorAll(this.MODIFIER_SELECTOR);
 
     const items: Array<GlobalModifier> = [];
     nodeList.forEach((_node, index) => {
-      const li = document.querySelector(
-        `${this.MODIFIER_SELECTOR}:nth-child(${index + 1})`,
+      const dt = document.querySelector(
+        `${this.MODIFIER_SELECTOR}:nth-of-type(${index + 1})`,
       );
-      if (!li) return;
+      const dd = document.querySelectorAll(
+        `${this.MODIFIER_SELECTOR}:nth-of-type(${index + 1}) + dd`,
+      );
+      if (!dt) return;
+
       items.push(
         new GlobalModifier(
-          li.querySelector("a")?.textContent || "",
-          utils.descriptionEscapeHTML(
-            li.querySelectorAll("span"),
-          ),
-          li.querySelector("a")?.getAttribute("href") || "",
+          dt.querySelector("a")?.textContent || "",
+          utils.descriptionEscapeHTML(dd),
+          dt.querySelector("a")?.getAttribute("href") || this.MODIFIER_URL,
         ),
       );
     });
-
     return items;
   };
 
-  /**
-   * TAG_URLのページにある全Tagの配列を返す
-   * @returns
-   */
   readonly makeTagArr = async (): Promise<Array<Tag>> => {
     const document = await utils.fetchDocument(this.TAG_URL);
     const nodeList = document.querySelectorAll(`${this.TAG_SELECTOR} > a`);
@@ -64,8 +57,7 @@ export default class movabletype {
     const nameAndUrl: utils.TNameAndURL[] = [];
     nodeList.forEach((anchor) => {
       const url =
-        anchor.parentElement?.querySelector("a")?.getAttribute("href") ||
-        "";
+        anchor.parentElement?.querySelector("a")?.getAttribute("href") || "";
       const name = anchor.textContent || "";
       // console.log(`name:${name},\n\turl:${url}`);
       nameAndUrl.push({ url: url, name: name });
@@ -92,12 +84,6 @@ export default class movabletype {
     return _tagItemArray;
   };
 
-  /**
-   * urlにアクセスして、タグの詳細情報とモディファイアを取得してTagクラスを返す
-   * @param url
-   * @param name
-   * @returns
-   */
   readonly makeTagItem = async (
     url: string,
     name: string,
@@ -108,22 +94,29 @@ export default class movabletype {
     } catch (_error) {
       console.log(_error.message);
       return new Tag(
-        utils.dummyTag.name,
+        name,
         "undefined",
         utils.dummyTag.description,
-        utils.dummyTag.url,
+        url,
         {},
       );
     }
     const contents = cc;
 
+    // KeywordsOfPage の先頭にMTがないのでつける
+    let __name = contents.querySelector("h1")?.textContent || name;
+    if (__name.search(/^mt/i) < 0) {
+      __name = "MT" + __name;
+    }
+
     return new Tag(
-      utils.normalizeTagName(
-        contents.querySelector("h1")?.textContent || name,
+      utils.normalizeTagName(__name),
+      utils.discriminateType(
+        contents.querySelector("li.icoBlock")?.textContent ||
+          contents.querySelector("li.icoFunction")?.textContent || "",
       ),
-      "undefined",
       utils.descriptionEscapeHTML(
-        contents.querySelectorAll("h1 + p"),
+        contents.querySelectorAll("div.moreInfo > p"),
       ),
       url,
       this.makeLocalModifiers(contents),
@@ -131,30 +124,24 @@ export default class movabletype {
   };
 
   /**
-   * HTMLDocumentを受け取ってTagに付属するモディファイアを返す。
-   * なければ空のObjectを返す。
-   * @param contents deno_dom.HTMLDocument
+   * タグ詳細ページのコンテンツからmodifierを作る
+   * @param contents
+   * @returns
    */
   readonly makeLocalModifiers = (
     contents: deno_dom.Element,
   ): TLocalModifiers => {
-    const modifierBlock = contents.querySelectorAll(
-      "div.modifier-block dl dt",
-    );
-    if (!modifierBlock) {
-      return {};
-    }
+    const modifierBlock = contents.querySelectorAll("div.moreInfo dl dt");
+    if (!modifierBlock) return {};
 
     const modifiers: TLocalModifiers = {};
 
-    modifierBlock.forEach((node, index) => {
-      // console.log(node.nodeName);
-      if (node.nodeName === "DD") return;
+    modifierBlock.forEach((_node, index) => {
       const dt = contents.querySelector(
-        `div.modifier-block dt:nth-of-type(${index + 1})`,
+        `div.moreInfo dl > dt:nth-of-type(${index + 1})`,
       );
       const dd = contents.querySelectorAll(
-        `div.modifier-block dt:nth-of-type(${index + 1}) + dd`,
+        `div.moreInfo dl > dt:nth-of-type(${index + 1}) + dd`,
       );
       const [name, value] = (dt?.textContent || "").split("=");
       const description = utils.descriptionEscapeHTML(dd);

@@ -10,20 +10,20 @@ export default class movabletype {
   readonly MODIFIER_URL =
     "https://www.movabletype.jp/documentation/appendices/modifiers/";
   readonly MODIFIER_SELECTOR = "ul.entrylist-with-topborder > li";
-  readonly FILENAME = "./data/movabletype/";
+  readonly FILENAME = "./data/movabletype";
 
   readonly main = async () => {
-    // タグのアイテム配列を作る
+    // タグの配列を作る
     const _tagItems = await this.makeTagArr();
     // モディファイアのアイテム配列を作る
     const _modifierItems = await this.makeGlobalModifierArr();
 
     // ふたつを合体してthis.filenameに書き込む
-    utils.writeArr(`${this.FILENAME}tag.json`, _tagItems);
+    utils.writeArr(`${this.FILENAME}/tag.json`, _tagItems);
 
-    utils.writeArr(`${this.FILENAME}modifier.json`, _modifierItems);
+    utils.writeArr(`${this.FILENAME}/modifier.json`, _modifierItems);
 
-    utils.writeItems(`./data/movabletype.json`, _tagItems, _modifierItems);
+    utils.writeItems(`${this.FILENAME}.json`, _tagItems, _modifierItems);
   };
 
   /**
@@ -138,8 +138,6 @@ export default class movabletype {
       url,
       this.makeTagModifiers(
         contents,
-        // contents.querySelectorAll("section.entry-modifier > dl > dt"),
-        // contents.querySelectorAll("section.entry-modifier > dl > dd"),
       ),
     );
   };
@@ -171,7 +169,7 @@ export default class movabletype {
         `section.entry-modifier > dl > dt:nth-of-type(${index + 1}) + dd`,
       );
       const [name, value] = (dt?.textContent || "").split("=");
-      console.log(`name:${name}, value:${value}`);
+      // console.log(`name:${name}, value:${value}`);
       const description = utils.descriptionEscapeHTML(dd);
 
       modifiers[name.toLowerCase()] = new LocalModifier(
