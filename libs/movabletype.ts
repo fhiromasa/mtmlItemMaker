@@ -53,7 +53,7 @@ export default class movabletype {
   };
 
   /**
-   * タグのutils.TItemsを作る
+   * タグの配列を作る
    * fetch 1 + {タグの数}回
    * @returns
    */
