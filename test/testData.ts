@@ -1,5 +1,72 @@
 import * as utils from "../libs/utils.ts";
-import { GlobalModifier, LocalModifier, Tag } from "../libs/item.ts";
+import {
+  BlockTag,
+  FunctionTag,
+  GlobalModifier,
+  LocalModifier,
+  Tag,
+} from "../libs/item.ts";
+
+export const powercms_x_testData = {
+  expected_gmod1: new GlobalModifier(
+    "_archive_type",
+    "アーカイブタイプ名を翻訳します(管理画面で利用されます)。",
+    "https://powercmsx.jp/about/mtml_reference.html#global_modifiers",
+  ),
+  expected_gmod2: new GlobalModifier(
+    "zero_pad",
+    "指定した文字数になるよう、先頭の余白を0で埋めます。",
+    "https://powercmsx.jp/about/mtml_reference.html#global_modifiers",
+  ),
+  expected_btag1: new BlockTag(
+    "mtactivitymonths",
+    "アクティビティが保存されている「月」をループ出力します。",
+    "https://powercmsx.jp/about/mtml_reference.html#block_tags",
+    {},
+  ),
+  expected_btag2: new BlockTag(
+    "mtworkspaces",
+    "'スペース' オブジェクトをループ出力します。予約変数__first__ : ループの初回に1がセットされます__last__ : ループの最終回に1がセットされます__odd__ : ループの奇数回に1がセットされます__even__ : ループの偶数回に1がセットされます__counter__ : ループのカウンター(1から始まる)__index__ : 'var'属性が与えられた時、ループのカウントがセットされます__total__ : ループの総回数がセットされます(配列またはオブジェクトの数)",
+    "https://powercmsx.jp/about/mtml_reference.html#block_tags",
+    {},
+  ),
+  expected_ctag1: new Tag(
+    "mtassetiftagged",
+    "undefined",
+    "アセットがタグ付けされている時にブロックが評価されます。",
+    "https://powercmsx.jp/about/mtml_reference.html#conditional_tags",
+    {},
+  ),
+  expected_ctag2: new Tag(
+    "mtwidgetiftagged",
+    "undefined",
+    "ウィジェットがタグ付けされている時にブロックが評価されます。",
+    "https://powercmsx.jp/about/mtml_reference.html#conditional_tags",
+    {},
+  ),
+  expected_ftag1: new FunctionTag(
+    "mtaccesstracking",
+    "アクティビティを記録します。静的出力時はJavaScriptコードを出力します。",
+    "https://powercmsx.jp/about/mtml_reference.html#function_tags",
+    {},
+  ),
+  expected_ftag2: new FunctionTag(
+    "mtworkspaceuploadpath",
+    "タグ 'mt:workspaceextrapath' のエイリアスです。",
+    "https://powercmsx.jp/about/mtml_reference.html#function_tags",
+    {},
+  ),
+  expected_lmod1: new LocalModifier(
+    "sort_by",
+    '指定のカラム値でアセットをソートする。フィールドでのソートを指定する場合"field:basename numeric"のように指定することも可能',
+    "",
+  ),
+  expected_lmod2: new LocalModifier(
+    "glue",
+    "繰り返し処理の際に指定された文字列で各ブロックを連結する",
+    "",
+  ),
+};
 
 export const powercms_testData = {
   expected_tag1: new Tag(
