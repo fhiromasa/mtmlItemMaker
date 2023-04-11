@@ -27,3 +27,5 @@ $ deno run --allow-net --allow-write mod.ts
 `./libs` classファイルとかを置いとく場所
 
 `./test` 製作物のテストファイルをおく場所
+
+`./html` 静的htmlを保存しておく場所。cmsごとにディレクトリは随時分ける

@@ -1,4 +1,4 @@
-import { assertEquals } from "./testDeps.ts";
+import { asserts } from "./testDeps.ts";
 import * as utils from "../libs/utils.ts";
 import { deno_dom } from "../libs/deps.ts";
 
@@ -19,7 +19,7 @@ Deno.test("fetchDocument_ok", async () => {
   const document = await utils.fetchDocument(url);
 
   // assert.
-  assertEquals(document.querySelector(selector)?.textContent, expected);
+  asserts.assertEquals(document.querySelector(selector)?.textContent, expected);
 });
 
 Deno.test("fetchDocument_ng_invalid_url", async () => {
@@ -31,31 +31,31 @@ Deno.test("fetchDocument_ng_invalid_url", async () => {
     await utils.fetchDocument(url);
   } catch (e) {
     // assert.
-    assertEquals(e.message, expected);
+    asserts.assertEquals(e.message, expected);
   }
 });
 
 /**
  * --------------------------------
- * elementFromURL()
+ * fetchElement()
  * - fetch errorの再現はできない
  * - parse errorの再現はできない
  * --------------------------------
  */
-Deno.test("elementFromURL_ok", async () => {
+Deno.test("fetchElement_ok", async () => {
   // prepare
   const url = "https://example.com";
   const selector = "h1";
   const expected = "Example Domain";
 
   // execute
-  const element = await utils.elementFromURL(url, selector);
+  const element = await utils.fetchElement(url, selector);
 
   // assert
-  assertEquals(element?.textContent, expected);
+  asserts.assertEquals(element?.textContent, expected);
 });
 
-Deno.test("elementFromURL_ng_invalid_selector", async () => {
+Deno.test("fetchElement_ng_invalid_selector", async () => {
   // prepare
   const url = "https://example.com";
   const selector = "";
@@ -63,14 +63,14 @@ Deno.test("elementFromURL_ng_invalid_selector", async () => {
 
   try {
     // execute
-    await utils.elementFromURL(url, selector);
+    await utils.fetchElement(url, selector);
   } catch (actual_error) {
     // assert
-    assertEquals(actual_error.message, expected);
+    asserts.assertEquals(actual_error.message, expected);
   }
 });
 
-Deno.test("elementFromURL_ng_nullSelector", async () => {
+Deno.test("fetchElement_ng_nullSelector", async () => {
   // prepare
   const url = "https://example.com";
   const selector = "article";
@@ -78,10 +78,10 @@ Deno.test("elementFromURL_ng_nullSelector", async () => {
 
   try {
     // execute
-    await utils.elementFromURL(url, selector);
+    await utils.fetchElement(url, selector);
   } catch (actual_error) {
     // assert
-    assertEquals(actual_error.message, expected);
+    asserts.assertEquals(actual_error.message, expected);
   }
 });
 
@@ -93,30 +93,36 @@ Deno.test("elementFromURL_ng_nullSelector", async () => {
 Deno.test("normalizeTagName_ok", () => {
   // assert
   // none
-  assertEquals(utils.normalizeTagName("MTActions"), "MTActions");
+  asserts.assertEquals(utils.normalizeTagName("MTActions"), "MTActions");
   // head space
-  assertEquals(utils.normalizeTagName("  MTActions"), "MTActions");
+  asserts.assertEquals(utils.normalizeTagName("  MTActions"), "MTActions");
   // end space
-  assertEquals(utils.normalizeTagName("MTActions  "), "MTActions");
+  asserts.assertEquals(utils.normalizeTagName("MTActions  "), "MTActions");
   // colon
-  assertEquals(utils.normalizeTagName("MT:Actions"), "MTActions");
+  asserts.assertEquals(utils.normalizeTagName("MT:Actions"), "MTActions");
   // mt app tag
-  assertEquals(utils.normalizeTagName("MTAppActionBar"), "MTAppActionBar");
+  asserts.assertEquals(
+    utils.normalizeTagName("MTAppActionBar"),
+    "MTAppActionBar",
+  );
   // dollar
-  assertEquals(utils.normalizeTagName("$MTAppActionBar$"), "MTAppActionBar");
+  asserts.assertEquals(
+    utils.normalizeTagName("$MTAppActionBar$"),
+    "MTAppActionBar",
+  );
   // powercmsX
-  assertEquals(
+  asserts.assertEquals(
     utils.normalizeTagName("<mt:activitymonths> ~ </mt:activitymonths>"),
     "mtactivitymonths",
   ); // powercmsX
-  assertEquals(
+  asserts.assertEquals(
     utils.normalizeTagName("\n<mt:accesstracking />"),
     "mtaccesstracking",
   );
   try {
     utils.normalizeTagName("");
   } catch (error) {
-    assertEquals(error.message, "" + utils.ERROR_MESSAGES.notTagName);
+    asserts.assertEquals(error.message, "" + utils.ERROR_MESSAGES.notTagName);
   }
 });
 
@@ -126,13 +132,13 @@ Deno.test("normalizeTagName_ok", () => {
  * --------------------------------
  */
 Deno.test("discriminateType_ok", () => {
-  assertEquals(utils.discriminateType("block"), "block");
-  assertEquals(utils.discriminateType("Block"), "block");
-  assertEquals(utils.discriminateType("BLOCK"), "block");
-  assertEquals(utils.discriminateType("function"), "function");
-  assertEquals(utils.discriminateType("Function"), "function");
-  assertEquals(utils.discriminateType("FUNCTION"), "function");
-  assertEquals(utils.discriminateType("hoge"), "undefined");
+  asserts.assertEquals(utils.discriminateType("block"), "block");
+  asserts.assertEquals(utils.discriminateType("Block"), "block");
+  asserts.assertEquals(utils.discriminateType("BLOCK"), "block");
+  asserts.assertEquals(utils.discriminateType("function"), "function");
+  asserts.assertEquals(utils.discriminateType("Function"), "function");
+  asserts.assertEquals(utils.discriminateType("FUNCTION"), "function");
+  asserts.assertEquals(utils.discriminateType("hoge"), "undefined");
 });
 /**
  * --------------------------------
@@ -156,7 +162,7 @@ Deno.test("descriptionEscapeHTML_ok", () => {
   const document = new deno_dom.DOMParser().parseFromString(html, "text/html");
   const nodeList = document?.querySelectorAll("p");
   if (!nodeList) {
-    assertEquals(true, false);
+    asserts.assertEquals(true, false);
     return;
   }
 
@@ -164,5 +170,23 @@ Deno.test("descriptionEscapeHTML_ok", () => {
   const actual = utils.descriptionEscapeHTML(nodeList);
 
   // assert
-  assertEquals(actual, expected);
+  asserts.assertEquals(actual, expected);
+});
+
+/**
+ * --------------------------------
+ * divideIntoHundredPieces()
+ * --------------------------------
+ */
+Deno.test("divideIntoHundredPieces_ok", () => {
+  // prepare
+  const nameAndURL: utils.TNameAndURL[] = new Array(189);
+
+  // execute
+  const actual = utils.divideIntoHundredPieces(nameAndURL);
+
+  // assert
+  asserts.assertEquals(actual.length, 2);
+  asserts.assertEquals(actual[0].length, 100);
+  asserts.assertEquals(actual[1].length, 89);
 });
