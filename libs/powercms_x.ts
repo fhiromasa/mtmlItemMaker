@@ -16,7 +16,7 @@ export default class powercms_x {
   readonly MODIFIER_URL = "https://powercmsx.jp/about/mtml_reference.html";
   readonly MODIFIER_SELECTOR =
     "#searchBlock > div > div:nth-child(1) > table:nth-child(9) > tbody > tr";
-  readonly FILENAME = "./data/powercms_x";
+  readonly FILENAME = "./powercms_x";
 
   readonly main = async () => {
     const tagItems = await this.makeTagArr();

@@ -15,7 +15,7 @@ export default class movabletype {
   readonly MODIFIER_URL =
     "https://www.movabletype.jp/documentation/appendices/modifiers/";
   readonly MODIFIER_SELECTOR = "ul.entrylist-with-topborder > li";
-  readonly FILENAME = "./data/movabletype";
+  readonly FILENAME = "./movabletype";
 
   readonly main = async () => {
     // タグの配列を作る
