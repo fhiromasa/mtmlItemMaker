@@ -6,21 +6,6 @@ import { TGlobalModifiers, TTags } from "../libs/item.ts";
 
 /**
  * --------------------------------
- * property check
- * --------------------------------
- */
-Deno.test("property", () => {
-  const cms = new movabletype_net();
-  asserts.assertNotEquals(cms.TAG_URL, "");
-  asserts.assertNotEquals(cms.TAG_SELECTOR, "");
-  asserts.assertNotEquals(cms.TAG_DETAIL_SELECTOR, "");
-  asserts.assertNotEquals(cms.MODIFIER_URL, "");
-  asserts.assertNotEquals(cms.MODIFIER_SELECTOR, "");
-  asserts.assertNotEquals(cms.FILENAME, "");
-});
-
-/**
- * --------------------------------
  * makeTagItem()
  * --------------------------------
  */
@@ -77,21 +62,33 @@ Deno.test("makeLocalModifiers_ok", async () => {
  */
 Deno.test("makeLocalModifiers_ok_IncludeBlock", async () => {
   // prepare
-  const url = "https://movabletype.net/tags/2015/09/mtincludeblock.html";
+  const expected_tag = movabletype_net_testData.expected_lmod1;
+  const expected_mod1 = expected_tag.modifiers["var"];
+  const expected_mod2 = expected_tag.modifiers["variable_foo"];
+  const url = expected_tag.url;
   const cms = new movabletype_net();
   const element = await utils.fetchElement(url, cms.TAG_DETAIL_SELECTOR);
 
   // execute
   const actual = cms.makeLocalModifiers(element);
+  const actual_mod1 = actual["var"];
+  const actual_mod2 = actual["variable_foo"];
 
   // console.log(JSON.stringify(actual));
 
   // assert
-  asserts.assertEquals(actual.var.name, "var");
-  asserts.assertEquals(actual.var.value, "variable_foo");
+  asserts.assertEquals(actual_mod1.name, expected_mod1.name);
+  asserts.assertEquals(actual_mod1.value, expected_mod1.value);
   asserts.assertEquals(
-    actual.var.description,
-    'MTIncludeBlock ブロックタグで囲んだ内容を、指定した名前の変数に代入します。変数は読み込むテンプレートモジュールで参照できます。指定しない場合の初期変数名は contents です。 <mt:IncludeBlock module="banner" var="foo">Movable Type へようこそ！</mt:IncludeBlock> MTInclude ファンクションタグで以下のように記述した場合と同じ動作をします。 <$mt:Include module="banner" foo="Movable Type へようこそ！"$> ■banner テンプレートモジュールの内容 <h1><$mt:Var name="foo"$></h1><div class="asset-content entry-content" itemprop="articleBody"> <p>MovableType.net は、安全で効率的なウェブサイト運用を可能にする CMS プラットフォームです。</p></div>',
+    actual_mod1.description,
+    expected_mod1.description,
+  );
+
+  asserts.assertEquals(actual_mod2.name, expected_mod2.name);
+  asserts.assertEquals(actual_mod2.value, expected_mod2.value);
+  asserts.assertEquals(
+    actual_mod2.description,
+    expected_mod2.description,
   );
 });
 

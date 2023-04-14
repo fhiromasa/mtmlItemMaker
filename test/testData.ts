@@ -127,6 +127,24 @@ export const movabletype_net_testData = {
     "https://movabletype.net/tags/2009/11/websitepath.html",
     {},
   ),
+  expected_lmod1: new Tag(
+    "MTIncludeBlock",
+    "undefined",
+    "MTInclude ファンクションタグと同じくテンプレートモジュールを読み込みます。違いは、読み込むテンプレートモジュールの所定の箇所に、MTIncludeBlock ブロックタグ内に記述した内容を差し込める点です。",
+    "https://movabletype.net/tags/2015/09/mtincludeblock.html",
+    {
+      var: new LocalModifier(
+        "var",
+        'MTIncludeBlock ブロックタグで囲んだ内容を、指定した名前の変数に代入します。変数は読み込むテンプレートモジュールで参照できます。指定しない場合の初期変数名は contents です。 <mt:IncludeBlock module="banner" var="foo">Movable Type へようこそ！</mt:IncludeBlock> MTInclude ファンクションタグで以下のように記述した場合と同じ動作をします。 <$mt:Include module="banner" foo="Movable Type へようこそ！"$> ■banner テンプレートモジュールの内容 <h1><$mt:Var name="foo"$></h1><div class="asset-content entry-content" itemprop="articleBody"> <p>MovableType.net は、安全で効率的なウェブサイト運用を可能にする CMS プラットフォームです。</p></div>',
+        "variable_foo",
+      ),
+      variable_foo: new LocalModifier(
+        "variable_foo",
+        '読み込むテンプレートモジュールで参照可能な変数を設定します。 例えば以下のサンプルでは、「フォームフィールド」テンプレート内で id、class、label が定義済みの変数として使用できます。id 変数の値には entry-body、class 変数の値は空、label 変数の値には 本文 が格納されます。 <mt:IncludeBlock module="フォームフィールド" id="entry-body" class="" label="本文" var="foo">Movable Type へようこそ！</mt:IncludeBlock>',
+        "value",
+      ),
+    },
+  ),
   expected_modifier1: new GlobalModifier(
     "count_characters",
     "1 を設定すると、MT タグの値に含まれる文字数 (空白を含む) を表示します。",
