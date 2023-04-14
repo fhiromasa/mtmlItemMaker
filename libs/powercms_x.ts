@@ -6,7 +6,7 @@ import {
   LocalModifier,
   Tag,
   TLocalModifiers,
-} from "./item.ts";
+} from "../item.ts";
 import { deno_dom } from "./deps.ts";
 
 export default class powercms_x {

@@ -5,7 +5,7 @@ import {
   GlobalModifier,
   LocalModifier,
   Tag,
-} from "../libs/item.ts";
+} from "../item.ts";
 
 export const powercms_x_testData = {
   expected_gmod1: new GlobalModifier(

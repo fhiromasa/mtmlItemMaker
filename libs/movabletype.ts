@@ -1,5 +1,10 @@
 import * as utils from "./utils.ts";
-import { GlobalModifier, LocalModifier, Tag, TLocalModifiers } from "./item.ts";
+import {
+  GlobalModifier,
+  LocalModifier,
+  Tag,
+  TLocalModifiers,
+} from "../item.ts";
 import { deno_dom, sleep } from "./deps.ts";
 
 export default class movabletype {

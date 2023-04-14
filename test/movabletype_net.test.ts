@@ -2,7 +2,7 @@ import { asserts } from "./testDeps.ts";
 import movabletype_net from "../libs/movabletype_net.ts";
 import { movabletype_net_testData } from "./testData.ts";
 import * as utils from "../libs/utils.ts";
-import { TGlobalModifiers, TTags } from "../libs/item.ts";
+import { TGlobalModifiers, TTags } from "../item.ts";
 
 /**
  * --------------------------------

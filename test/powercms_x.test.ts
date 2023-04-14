@@ -1,4 +1,4 @@
-import { TGlobalModifiers, TTags } from "../libs/item.ts";
+import { TGlobalModifiers, TTags } from "../item.ts";
 import powercms_x from "../libs/powercms_x.ts";
 import { powercms_x_testData } from "./testData.ts";
 import { asserts } from "./testDeps.ts";
