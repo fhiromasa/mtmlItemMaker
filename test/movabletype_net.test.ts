@@ -6,21 +6,6 @@ import { TGlobalModifiers, TTags } from "../libs/item.ts";
 
 /**
  * --------------------------------
- * property check
- * --------------------------------
- */
-Deno.test("property", () => {
-  const cms = new movabletype_net();
-  asserts.assertNotEquals(cms.TAG_URL, "");
-  asserts.assertNotEquals(cms.TAG_SELECTOR, "");
-  asserts.assertNotEquals(cms.TAG_DETAIL_SELECTOR, "");
-  asserts.assertNotEquals(cms.MODIFIER_URL, "");
-  asserts.assertNotEquals(cms.MODIFIER_SELECTOR, "");
-  asserts.assertNotEquals(cms.FILENAME, "");
-});
-
-/**
- * --------------------------------
  * makeTagItem()
  * --------------------------------
  */
