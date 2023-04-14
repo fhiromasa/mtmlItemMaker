@@ -1,5 +1,5 @@
 import { deno_dom, isURL } from "./deps.ts";
-import { GlobalModifier, Tag, TItem, TTagType } from "./item.ts";
+import { GlobalModifier, Tag, TItem, TTagType } from "../item.ts";
 
 export type TItems = {
   [string: string]: TItem;

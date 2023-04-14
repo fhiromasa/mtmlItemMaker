@@ -1,1 +1,8 @@
-data/
+movabletype/
+movabletype_net/
+powercms/
+powercms_x/
+movabletype.json
+movabletype_net.json
+powercms.json
+powercms_x.json

@@ -13,7 +13,7 @@ export default class movabletype {
   readonly TAG_DETAIL_SELECTOR = "article#entry-detail";
   readonly MODIFIER_URL = "https://movabletype.net/tags/modifiers.html";
   readonly MODIFIER_SELECTOR = "li.hentry";
-  readonly FILENAME = "./data/movabletype_net";
+  readonly FILENAME = "./movabletype_net";
 
   readonly main = async () => {
     // タグのアイテム配列を作る

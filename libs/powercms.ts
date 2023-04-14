@@ -14,7 +14,7 @@ export default class powercms {
   readonly MODIFIER_URL =
     "https://www.powercms.jp/products/document/modifiers/";
   readonly MODIFIER_SELECTOR = "dl.listBlock dt";
-  readonly FILENAME = "./data/powercms";
+  readonly FILENAME = "./powercms";
 
   readonly main = async () => {
     // タグの配列を作る
