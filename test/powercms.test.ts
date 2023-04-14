@@ -2,7 +2,7 @@ import { asserts } from "./testDeps.ts";
 import powercms from "../libs/powercms.ts";
 import { powercms_testData } from "./testData.ts";
 import * as utils from "../libs/utils.ts";
-import { TGlobalModifiers } from "../libs/item.ts";
+import { TGlobalModifiers } from "../item.ts";
 
 Deno.test("makeTagItem_ok_Assets", async () => {
   // prepare
