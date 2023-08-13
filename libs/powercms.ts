@@ -23,9 +23,8 @@ export default class powercms {
     const _modifierItems = await this.makeGlobalModifierArr();
 
     // ふたつを合体してthis.filenameに書き込む
-    utils.writeArr(`${this.FILENAME}/tag.json`, _tagItems);
-
-    utils.writeArr(`${this.FILENAME}/modifier.json`, _modifierItems);
+    utils.writeArr(this.FILENAME, `tag.json`, _tagItems);
+    utils.writeArr(this.FILENAME, `modifier.json`, _modifierItems);
 
     utils.writeItems(`${this.FILENAME}.json`, _tagItems, _modifierItems);
   };
@@ -136,27 +135,38 @@ export default class powercms {
   readonly makeLocalModifiers = (
     contents: deno_dom.Element,
   ): TLocalModifiers => {
-    const modifierBlock = contents.querySelectorAll("div.moreInfo dl dt");
-    if (!modifierBlock) return {};
+    const sections = contents.querySelectorAll("div.moreInfo .section");
+    if (!sections) return {};
 
     const modifiers: TLocalModifiers = {};
 
-    modifierBlock.forEach((_node, index) => {
-      const dt = contents.querySelector(
-        `div.moreInfo dl > dt:nth-of-type(${index + 1})`,
-      );
-      const dd = contents.querySelectorAll(
-        `div.moreInfo dl > dt:nth-of-type(${index + 1}) + dd`,
-      );
-      const [name, value] = (dt?.textContent || "").split("=");
-      const description = utils.descriptionEscapeHTML(dd);
-      modifiers[name.toLowerCase()] = new LocalModifier(
-        name,
-        description,
-        (value || "").replace(/"/g, ""),
-      );
-    });
+    sections.forEach((section, _index) => {
+      section.childNodes.forEach((node) => {
+        if (node.nodeName !== "H3" || node.textContent !== "モディファイア") {
+          return;
+        }
+        const dlElements = node.parentElement?.querySelectorAll("dl");
+        dlElements?.forEach((dl) => {
+          dl.childNodes.forEach((node) => {
+            if (node.nodeName !== "DT") return;
+            const dt = node;
+            const dd = dt.nextSibling?.nextSibling;
+            // console.log(dd?.nodeName);
+            const [name, value] = dt.textContent.split("=");
+            const description = dd?.nodeName === "DD"
+              ? utils.descriptionEscapeHTML(dd.childNodes)
+              : "";
 
+            modifiers[name.toLowerCase()] = new LocalModifier(
+              name,
+              description,
+              value?.replace(/\"/g, ""),
+            );
+          });
+        });
+      });
+    });
+    // console.log(modifiers);
     return modifiers;
   };
 }

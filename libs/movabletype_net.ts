@@ -22,9 +22,9 @@ export default class movabletype {
     const _modifierArr = await this.makeGlobalModifierArr();
 
     // Tagの書き込み
-    utils.writeArr(`${this.FILENAME}/tag.json`, _tagArr);
-    // GlobalModifierの書き込み
-    utils.writeArr(`${this.FILENAME}/modifier.json`, _modifierArr);
+    utils.writeArr(this.FILENAME, `tag.json`, _tagArr);
+
+    utils.writeArr(this.FILENAME, `modifier.json`, _modifierArr);
     // ふたつを合体してthis.filenameに書き込む
     utils.writeItems(`${this.FILENAME}.json`, _tagArr, _modifierArr);
   };

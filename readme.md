@@ -16,8 +16,8 @@ $ deno run [flags] mod.ts
 # ネットだけ許可
 $ deno run --allow-net mod.ts
 
-# ネットと書き込み許可
-$ deno run --allow-net --allow-write mod.ts
+# ネット,書き込み,読み込み許可
+$ deno run --allow-net --allow-write --allow-read mod.ts
 ```
 
 # ディレクトリ説明
