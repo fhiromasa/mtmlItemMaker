@@ -24,6 +24,9 @@ export default class movabletype {
     const _modifierItems = await this.makeGlobalModifierArr();
 
     // ふたつを合体してthis.filenameに書き込む
+    Deno.statSync(this.FILENAME).isDirectory
+      ? undefined
+      : Deno.mkdirSync(this.FILENAME);
     utils.writeArr(`${this.FILENAME}/tag.json`, _tagItems);
 
     utils.writeArr(`${this.FILENAME}/modifier.json`, _modifierItems);
@@ -158,32 +161,40 @@ export default class movabletype {
    */
   readonly makeTagModifiers = (element: deno_dom.Element): TLocalModifiers => {
     // console.log(element.textContent);
-    const modifierBlock = element.querySelectorAll(
-      `section.entry-modifier > dl > dt`,
+    const dlElements = element.querySelectorAll(
+      `section.entry-modifier dl`,
     );
-    if (modifierBlock.length === 0) {
+    if (dlElements.length === 0) {
       return {};
     }
     const modifiers: TLocalModifiers = {};
 
-    modifierBlock.forEach((_node, index) => {
-      const dt = element.querySelector(
-        `section.entry-modifier > dl > dt:nth-of-type(${index + 1})`,
-      );
-      const dd = element.querySelectorAll(
-        `section.entry-modifier > dl > dt:nth-of-type(${index + 1}) + dd`,
-      );
-      const [name, value] = (dt?.textContent || "").split("=");
-      // console.log(`name:${name}, value:${value}`);
-      const description = utils.descriptionEscapeHTML(dd);
+    dlElements.forEach((node) => {
+      const modifierBlock = node.childNodes;
 
-      modifiers[name.toLowerCase()] = new LocalModifier(
-        name,
-        description,
-        (value || "").replace(/"/g, ""),
-      );
+      modifierBlock.forEach((dtNode) => {
+        if (dtNode.nodeName !== "DT") {
+          return;
+        }
+        const dt = dtNode;
+        // nextSiblingひとつだけだと空白のテキストノードが取得される仕様になっているので2回繰り返している
+        // 参考はこちら https://developer.mozilla.org/ja/docs/Web/API/Node/nextSibling
+        const dd = dtNode.nextSibling?.nextSibling;
+        const [name, value] = (dt?.textContent || "").split("=");
+        // console.log(`name:${name}, value:${value}`);
+        // console.log(dd?.nodeName);
+        const description = dd?.nodeName === "DD"
+          ? utils.descriptionEscapeHTML(dd.childNodes)
+          : "";
+        modifiers[name.toLowerCase()] = new LocalModifier(
+          name,
+          description,
+          (value || "").replace(/"/g, ""),
+        );
+      });
     });
 
+    // console.log(JSON.stringify(modifiers));
     return modifiers;
   };
 }
