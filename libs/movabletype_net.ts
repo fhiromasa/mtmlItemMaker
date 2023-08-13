@@ -5,7 +5,7 @@ import {
   Tag,
   TLocalModifiers,
 } from "../item.ts";
-import { deno_dom, ensureDir, sleep } from "./deps.ts";
+import { deno_dom, sleep } from "./deps.ts";
 
 export default class movabletype {
   readonly TAG_URL = "https://movabletype.net/tags/";
@@ -16,17 +16,15 @@ export default class movabletype {
   readonly FILENAME = "./movabletype_net";
 
   readonly main = async () => {
-    // dirがなければ作る
-    await ensureDir(this.FILENAME);
     // タグのアイテム配列を作る
     const _tagArr = await this.makeTagArr();
     // モディファイアのアイテム配列を作る
     const _modifierArr = await this.makeGlobalModifierArr();
 
     // Tagの書き込み
-    utils.writeArr(`${this.FILENAME}/tag.json`, _tagArr);
-    // GlobalModifierの書き込み
-    utils.writeArr(`${this.FILENAME}/modifier.json`, _modifierArr);
+    utils.writeArr(this.FILENAME, `tag.json`, _tagArr);
+
+    utils.writeArr(this.FILENAME, `modifier.json`, _modifierArr);
     // ふたつを合体してthis.filenameに書き込む
     utils.writeItems(`${this.FILENAME}.json`, _tagArr, _modifierArr);
   };

@@ -5,7 +5,7 @@ import {
   Tag,
   TLocalModifiers,
 } from "../item.ts";
-import { deno_dom, ensureDir, sleep } from "./deps.ts";
+import { deno_dom, sleep } from "./deps.ts";
 
 export default class powercms {
   readonly TAG_URL = "https://www.powercms.jp/products/document/template-tags/";
@@ -17,17 +17,14 @@ export default class powercms {
   readonly FILENAME = "./powercms";
 
   readonly main = async () => {
-    // dirがなければ作る
-    await ensureDir(this.FILENAME);
     // タグの配列を作る
     const _tagItems = await this.makeTagArr();
     // モディファイアのアイテム配列を作る
     const _modifierItems = await this.makeGlobalModifierArr();
 
     // ふたつを合体してthis.filenameに書き込む
-    utils.writeArr(`${this.FILENAME}/tag.json`, _tagItems);
-
-    utils.writeArr(`${this.FILENAME}/modifier.json`, _modifierItems);
+    utils.writeArr(this.FILENAME, `tag.json`, _tagItems);
+    utils.writeArr(this.FILENAME, `modifier.json`, _modifierItems);
 
     utils.writeItems(`${this.FILENAME}.json`, _tagItems, _modifierItems);
   };

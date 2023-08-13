@@ -1,5 +1,6 @@
-import { deno_dom, isURL } from "./deps.ts";
+import { deno_dom, ensureDir, isURL } from "./deps.ts";
 import { GlobalModifier, Tag, TItem, TTagType } from "../item.ts";
+import { dirname } from "https://deno.land/std@0.198.0/path/dirname.ts";
 
 export type TItems = {
   [string: string]: TItem;
@@ -141,9 +142,11 @@ export const textFormat = (description: string): string => {
 };
 
 export const writeArr = async (
+  dirname: string,
   filename: string,
   arr: Array<Tag | GlobalModifier>,
 ) => {
+  ensureDir(dirname);
   if (!filename.match(/\.json$/)) {
     throw new Error(ERROR_MESSAGES.filename);
   }
@@ -152,7 +155,10 @@ export const writeArr = async (
     items[item.name.toLowerCase()] = item;
   });
 
-  return await Deno.writeTextFile(filename, JSON.stringify(items));
+  return await Deno.writeTextFile(
+    dirname + "/" + filename,
+    JSON.stringify(items),
+  );
 };
 
 /**

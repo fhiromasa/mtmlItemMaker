@@ -7,7 +7,7 @@ import {
   Tag,
   TLocalModifiers,
 } from "../item.ts";
-import { deno_dom, ensureDir } from "./deps.ts";
+import { deno_dom } from "./deps.ts";
 
 export default class powercms_x {
   readonly TAG_URL = "https://powercmsx.jp/about/mtml_reference.html";
@@ -19,12 +19,11 @@ export default class powercms_x {
   readonly FILENAME = "./powercms_x";
 
   readonly main = async () => {
-    ensureDir(this.FILENAME);
     const tagItems = await this.makeTagArr();
     const modifierItems = await this.makeGlobalModifierArr();
 
-    utils.writeArr(`${this.FILENAME}/tag.json`, tagItems);
-    utils.writeArr(`${this.FILENAME}/modifier.json`, modifierItems);
+    utils.writeArr(this.FILENAME, `tag.json`, tagItems);
+    utils.writeArr(this.FILENAME, `modifier.json`, modifierItems);
     utils.writeItems(`${this.FILENAME}.json`, tagItems, modifierItems);
   };
 
