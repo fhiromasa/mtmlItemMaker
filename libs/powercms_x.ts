@@ -22,8 +22,8 @@ export default class powercms_x {
     const tagItems = await this.makeTagArr();
     const modifierItems = await this.makeGlobalModifierArr();
 
-    utils.writeArr(`${this.FILENAME}/tag.json`, tagItems);
-    utils.writeArr(`${this.FILENAME}/modifier.json`, modifierItems);
+    utils.writeArr(this.FILENAME, `tag.json`, tagItems);
+    utils.writeArr(this.FILENAME, `modifier.json`, modifierItems);
     utils.writeItems(`${this.FILENAME}.json`, tagItems, modifierItems);
   };
 
