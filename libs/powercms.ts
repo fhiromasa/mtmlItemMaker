@@ -5,7 +5,7 @@ import {
   Tag,
   TLocalModifiers,
 } from "../item.ts";
-import { deno_dom, sleep } from "./deps.ts";
+import { deno_dom, ensureDir, sleep } from "./deps.ts";
 
 export default class powercms {
   readonly TAG_URL = "https://www.powercms.jp/products/document/template-tags/";
@@ -17,6 +17,8 @@ export default class powercms {
   readonly FILENAME = "./powercms";
 
   readonly main = async () => {
+    // dirがなければ作る
+    await ensureDir(this.FILENAME);
     // タグの配列を作る
     const _tagItems = await this.makeTagArr();
     // モディファイアのアイテム配列を作る
@@ -136,27 +138,38 @@ export default class powercms {
   readonly makeLocalModifiers = (
     contents: deno_dom.Element,
   ): TLocalModifiers => {
-    const modifierBlock = contents.querySelectorAll("div.moreInfo dl dt");
-    if (!modifierBlock) return {};
+    const sections = contents.querySelectorAll("div.moreInfo .section");
+    if (!sections) return {};
 
     const modifiers: TLocalModifiers = {};
 
-    modifierBlock.forEach((_node, index) => {
-      const dt = contents.querySelector(
-        `div.moreInfo dl > dt:nth-of-type(${index + 1})`,
-      );
-      const dd = contents.querySelectorAll(
-        `div.moreInfo dl > dt:nth-of-type(${index + 1}) + dd`,
-      );
-      const [name, value] = (dt?.textContent || "").split("=");
-      const description = utils.descriptionEscapeHTML(dd);
-      modifiers[name.toLowerCase()] = new LocalModifier(
-        name,
-        description,
-        (value || "").replace(/"/g, ""),
-      );
-    });
+    sections.forEach((section, _index) => {
+      section.childNodes.forEach((node) => {
+        if (node.nodeName !== "H3" || node.textContent !== "モディファイア") {
+          return;
+        }
+        const dlElements = node.parentElement?.querySelectorAll("dl");
+        dlElements?.forEach((dl) => {
+          dl.childNodes.forEach((node) => {
+            if (node.nodeName !== "DT") return;
+            const dt = node;
+            const dd = dt.nextSibling?.nextSibling;
+            // console.log(dd?.nodeName);
+            const [name, value] = dt.textContent.split("=");
+            const description = dd?.nodeName === "DD"
+              ? utils.descriptionEscapeHTML(dd.childNodes)
+              : "";
 
+            modifiers[name.toLowerCase()] = new LocalModifier(
+              name,
+              description,
+              value?.replace(/\"/g, ""),
+            );
+          });
+        });
+      });
+    });
+    // console.log(modifiers);
     return modifiers;
   };
 }
