@@ -195,11 +195,11 @@ export const movabletype_testData = {
   expected_modifier: new GlobalModifier(
     "capitalize",
     "1 を指定すると、モディファイアを付与したファンクションタグの値に含まれる単語の最初の文字を大文字に変更し、残りの文字を小文字に変換します。",
-    "https://www.movabletype.jp/documentation/appendices/modifiers/capitalize.html",
+    "https://movabletype.jp/documentation/appendices/modifiers/capitalize.html",
   ),
   expected_modifier2: new GlobalModifier(
     "_default",
     "モディファイアを付与したファンクションタグの値が空になる場合に、代わりに出力する値を指定できます。",
-    "https://www.movabletype.jp/documentation/appendices/modifiers/default.html",
+    "https://movabletype.jp/documentation/appendices/modifiers/default.html",
   ),
 };

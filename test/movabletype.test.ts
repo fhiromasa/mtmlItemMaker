@@ -72,6 +72,7 @@ Deno.test("makeTagItem_ng_invalid_url", async () => {
  * --------------------------------
  * makeGlobalModifierArr()
  * --------------------------------
+ * global modifierが取れているかのチェック
  */
 Deno.test("makeGlobalModifierArr_ok", async () => {
   // prepare
