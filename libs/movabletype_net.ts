@@ -7,12 +7,13 @@ import {
 } from "../item.ts";
 import { deno_dom, sleep } from "./deps.ts";
 
-export default class movabletype {
+export default class movabletype_net {
   readonly TAG_URL = "https://movabletype.net/tags/";
   readonly TAG_SELECTOR = "#support-top-navi li";
   readonly TAG_DETAIL_SELECTOR = "article#entry-detail";
   readonly MODIFIER_URL = "https://movabletype.net/tags/modifiers.html";
-  readonly MODIFIER_SELECTOR = "li.hentry";
+  readonly MODIFIER_SELECTOR =
+    "#support-category-navi > div > div > nav > ul > li > a";
   readonly FILENAME = "./movabletype_net";
 
   readonly main = async () => {
@@ -36,25 +37,27 @@ export default class movabletype {
    */
   readonly makeGlobalModifierArr = async (): Promise<Array<GlobalModifier>> => {
     const document = await utils.fetchDocument(this.MODIFIER_URL);
-    const nodeList = document.querySelectorAll(this.MODIFIER_SELECTOR);
+    const aNodes = document.querySelectorAll(this.MODIFIER_SELECTOR);
 
     const items: Array<GlobalModifier> = [];
-    nodeList.forEach((_node, index) => {
-      const li = document.querySelector(
-        `${this.MODIFIER_SELECTOR}:nth-child(${index + 1})`,
-      );
-      if (!li) return;
-      items.push(
-        new GlobalModifier(
-          li.querySelector("a")?.textContent || "",
-          utils.descriptionEscapeHTML(
-            li.querySelectorAll("span"),
-          ),
-          li.querySelector("a")?.getAttribute("href") || "",
-        ),
-      );
-    });
+    aNodes.forEach((aNode, _index) => {
+      // console.log(_index);
+      let name = "", description = "", url = "";
+      aNode.childNodes.forEach((element) => {
+        switch (element.nodeName) {
+          case "#text":
+            name = element.textContent;
+            url = element.parentElement?.getAttribute("href") || "";
+            break;
 
+          case "SPAN":
+            description = utils.textFormat(element.textContent);
+            break;
+        }
+      });
+      items.push(new GlobalModifier(name, description, url));
+    });
+    // console.log(items);
     return items;
   };
 
@@ -128,7 +131,7 @@ export default class movabletype {
       ),
       "undefined",
       utils.descriptionEscapeHTML(
-        contents.querySelectorAll("h1 + p"),
+        contents.querySelectorAll("#entry-detail > p"),
       ),
       url,
       this.makeLocalModifiers(contents),
