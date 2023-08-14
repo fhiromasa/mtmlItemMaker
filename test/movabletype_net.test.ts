@@ -20,7 +20,7 @@ Deno.test("makeTagItem_ok", async () => {
   const actual = await cms.makeTagItem(url, name);
 
   // assert
-  // console.log(JSON.stringify(actual));
+  // console.log(actual);
   asserts.assertEquals(actual.name, expected.name);
   asserts.assertEquals(actual.url, expected.url);
   asserts.assertEquals(actual.type, expected.type);
@@ -50,6 +50,7 @@ Deno.test("makeLocalModifiers_ok", async () => {
   const mod = expected.modifiers.id;
 
   // assert
+  // console.log(actual.id);
   asserts.assertEquals(actual.id.name, mod.name);
   asserts.assertEquals(actual.id.value, mod.value);
   asserts.assertEquals(
