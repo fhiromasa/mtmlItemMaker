@@ -160,7 +160,7 @@ export default class powercms {
             modifiers[name.toLowerCase()] = new LocalModifier(
               name,
               description,
-              value?.replace(/\"/g, ""),
+              value?.replace(/\"/g, "") || "",
             );
           });
         });
