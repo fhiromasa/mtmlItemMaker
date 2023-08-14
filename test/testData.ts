@@ -110,12 +110,15 @@ export const movabletype_net_testData = {
   expected_tag1: new Tag(
     "MTAsset",
     "undefined",
-    "id モディファイアで指定した単一のアイテムを表示する為のブロックタグです。",
+    [
+      "id モディファイアで指定した単一のアイテムを表示する為のブロックタグです。",
+      "MTElse ブロックタグと組み合わせることで、条件を満たさない場合の実行内容も設定できます。",
+    ].join("\n"),
     "https://movabletype.net/tags/2007/08/asset.html",
     {
       id: new LocalModifier(
         "id",
-        "表示させたいアイテムの id を指定します。",
+        "表示させたいアイテムの id を指定します。MTElse ブロックタグを使用している場合にid モディファイアを設定しない場合は、MTElse ブロックタグの内容を処理します。",
         "ID",
       ),
     },

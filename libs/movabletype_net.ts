@@ -131,7 +131,7 @@ export default class movabletype_net {
       ),
       "undefined",
       utils.descriptionEscapeHTML(
-        contents.querySelectorAll("h1 + p"),
+        contents.querySelectorAll("#entry-detail > p"),
       ),
       url,
       this.makeLocalModifiers(contents),
