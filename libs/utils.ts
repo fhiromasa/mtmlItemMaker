@@ -1,6 +1,5 @@
 import { deno_dom, ensureDir, isURL } from "./deps.ts";
 import { GlobalModifier, Tag, TItem, TTagType } from "../item.ts";
-import { dirname } from "https://deno.land/std@0.198.0/path/dirname.ts";
 
 export type TItems = {
   [string: string]: TItem;
